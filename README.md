@@ -1,53 +1,78 @@
 🏗️ mkarchi
-mkarchi (make architecture) is a command-line tool that creates project structures from tree-format files. It allows you to define your entire project structure in a simple text file and generate it instantly, including files with pre-written content.
+mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files.
+Define your entire project architecture — folders, files, and even file contents — in one readable text file, then generate it instantly with a single command.
+
 ✨ Features
 
-📁 Create directories from tree structure
-📄 Create empty files instantly
+
+📁 Create directories from a tree structure
+
+
+📄 Create empty files automatically
+
+
 ✍️ Create files with content using intuitive { } syntax
-🎯 Preserve indentation automatically (perfect for Python, YAML, etc.)
+
+
+🎯 Preserve indentation (perfect for Python, YAML, JSON, etc.)
+
+
 💬 Support comments in structure files
-🚀 Fast and simple - one command to build your entire project
+
+
+🚀 Fast & simple — build your whole project in one command
+
+
 
 📦 Installation
-Option 1: Install from source
-bashgit clone https://github.com/yourusername/mkarchi.git
+✅ Recommended (via pip)
+pip install mkarchi
+
+Option 2: Install from source
+git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 pip install -e .
-Option 2: Run as module (no installation)
-bashgit clone https://github.com/yourusername/mkarchi.git
+
+Option 3: Run as module (no installation)
+git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 python -m mkarchi apply structure.txt
+
+
 🚀 Quick Start
-1. Create a structure file
+1️⃣ Create a structure file
 Create a file called structure.txt:
 my_project/
 ├── src/
 │   ├── main.py{
 │   │   def main():
 │   │       print("Hello, World!")
-│   │   
+│   │
 │   │   if __name__ == "__main__":
 │   │       main()
-│   │   }
+│   }
 │   └── utils.py{
-│   │   def helper():
-│   │       return "Helper function"
-│   │   }
+│       def helper():
+│           return "Helper function"
+│   }
 ├── tests/
 │   └── test_main.py
 ├── README.md{
 │   # My Project
-│   
+│
 │   This is an awesome project!
 │   }
 └── requirements.txt{
     pytest>=7.0.0
     requests>=2.28.0
-    }
-2. Run mkarchi
-bashmkarchi apply structure.txt
-3. See the magic! ✨
+}
+
+
+2️⃣ Run mkarchi
+mkarchi apply structure.txt
+
+
+3️⃣ See the magic ✨
 🚀 Creating structure from structure.txt...
 
 📁 Created directory: my_project
@@ -60,9 +85,11 @@ bashmkarchi apply structure.txt
 📄 Created file with content: my_project/requirements.txt
 
 ✅ Architecture created successfully!
+
+
 📖 Usage
 Basic Commands
-bash# Create structure from file
+# Create structure from file
 mkarchi apply structure.txt
 
 # Show help
@@ -70,86 +97,95 @@ mkarchi --help
 
 # Show version
 mkarchi --version
-Structure File Format
-Create Directories
+
+
+📄 Structure File Format
+📁 Create Directories
 Directories must end with /:
 my_folder/
 ├── subfolder/
 └── another_folder/
-Create Empty Files
-Files without braces are created empty:
+
+
+📄 Create Empty Files
+Files without { } are created empty:
 my_folder/
 ├── empty_file.txt
 └── config.json
-Create Files with Content
-Use { } syntax to add content:
-my_folder/
-├── script.py{
-│   print("Hello!")
-│   print("This is Python code")
-│   }
-└── README.md{
-    # Title
-    Content here
-    }
-Indentation Preservation
-The tool automatically preserves relative indentation:
+
+
+✍️ Create Files with Content
+Use { } to define file content:
+script.py{
+    print("Hello!")
+    print("This is Python code")
+}
+
+
+🎯 Indentation Preservation
+mkarchi automatically preserves indentation:
 utils.py{
-│   def greet(name):
-│       if name:
-│           print(f"Hello, {name}!")
-│       else:
-│           print("Hello, World!")
-│   }
-Result in utils.py:
-pythondef greet(name):
+    def greet(name):
+        if name:
+            print(f"Hello, {name}!")
+        else:
+            print("Hello, World!")
+}
+
+Result (utils.py):
+def greet(name):
     if name:
         print(f"Hello, {name}!")
     else:
         print("Hello, World!")
-Comments
-Use # to add comments in your structure file:
+
+
+💬 Comments Support
+Use # for comments in your structure file:
 project/
-├── src/          # Source code directory
-│   └── main.py   # Main entry point
-└── tests/        # Test directory
+├── src/          # Source code
+│   └── main.py   # Entry point
+└── tests/        # Tests
+
+
 🎯 Use Cases
-Quick Prototyping
-bash# Create a new Flask project structure in seconds
+⚡ Quick Prototyping
 mkarchi apply flask_template.txt
-Template Projects
-bash# Share project templates with your team
+
+📦 Template Projects
 mkarchi apply team_template.txt
-Documentation
-bash# Create example project structures for tutorials
+
+📘 Documentation & Tutorials
 mkarchi apply tutorial_structure.txt
-Microservices
-bash# Set up multiple service structures quickly
-mkarchi apply microservice1.txt
-mkarchi apply microservice2.txt
+
+🧩 Microservices
+mkarchi apply service1.txt
+mkarchi apply service2.txt
+
+
 🔧 Advanced Examples
-Python Project with Tests
+🐍 Python Project with Tests
 python_project/
 ├── src/
 │   ├── __init__.py
 │   └── main.py{
-│   │   """Main module."""
-│   │   
-│   │   def main():
-│   │       print("Starting application...")
-│   │   }
+│       """Main module."""
+│
+│       def main():
+│           print("Starting application...")
+│   }
 ├── tests/
 │   ├── __init__.py
 │   └── test_main.py{
-│   │   import pytest
-│   │   from src.main import main
-│   │   
-│   │   def test_main():
-│   │       assert main() is None
-│   │   }
+│       import pytest
+│       from src.main import main
+│
+│       def test_main():
+│           assert main() is None
+│   }
 ├── setup.py{
 │   from setuptools import setup, find_packages
-│   
+│
 │   setup(
 │       name="my-project",
 │       version="0.1.0",
@@ -157,50 +193,44 @@ python_project/
 │   )
 │   }
 └── README.md
-Web Project Structure
-web_project/
-├── public/
-│   ├── index.html{
-│   │   <!DOCTYPE html>
-│   │   <html>
-│   │   <head>
-│   │       <title>My Site</title>
-│   │   </head>
-│   │   <body>
-│   │       <h1>Welcome!</h1>
-│   │   </body>
-│   │   </html>
-│   │   }
-│   └── style.css{
-│   │   body {
-│   │       font-family: Arial, sans-serif;
-│   │       margin: 0;
-│   │       padding: 20px;
-│   │   }
-│   │   }
-└── src/
-    └── app.js{
-    │   console.log('App initialized');
-    │   }
+
+
 🤝 Contributing
-Contributions are welcome! Feel free to:
+Contributions are welcome! 🚀
+
 
 Fork the repository
-Create a feature branch (git checkout -b feature/amazing-feature)
-Commit your changes (git commit -m 'Add amazing feature')
-Push to the branch (git push origin feature/amazing-feature)
+
+
+Create a feature branch
+git checkout -b feature/amazing-feature
+
+
+
+Commit your changes
+git commit -m "Add amazing feature"
+
+
+
+Push to your branch
+git push origin feature/amazing-feature
+
+
+
 Open a Pull Request
 
+
+
 📝 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-🐛 Issues
-Found a bug or have a feature request? Please open an issue on GitHub Issues.
-⭐ Show Your Support
-If you find this tool useful, please consider giving it a star on GitHub!
-📧 Contact
+This project is licensed under the MIT License.
+See the LICENSE file for details.
 
-GitHub: @SoufyanRachdi
-Email: soufyanrachdiii@gmail.com
+🐛 Issues & Feedback
+Found a bug or have a feature request?
+Please open an issue on GitHub Issues.
 
+⭐ Support the Project
+If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
 
-Made with ❤️ by Soufyan Rachdi
+❤️ Made with passion by Soufyan Rachdi
+
