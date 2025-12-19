@@ -1,47 +1,47 @@
-🏗️ mkarchi
-mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files.
+# 🏗️ mkarchi
+
+mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files.  
 Define your entire project architecture — folders, files, and even file contents — in one readable text file, then generate it instantly with a single command.
 
-✨ Features
+---
 
+# ✨ Features
 
-📁 Create directories from a tree structure
+- 📁 Create directories from a tree structure  
+- 📄 Create empty files automatically  
+- ✍️ Create files with content using intuitive `{ }` syntax  
+- 🎯 Preserve indentation (perfect for Python, YAML, JSON, etc.)  
+- 💬 Support comments in structure files  
+- 🚀 Fast & simple — build your whole project in one command  
 
+---
 
-📄 Create empty files automatically
+# 📦 Installation
 
+#### ✅ Recommended (via pip)
 
-✍️ Create files with content using intuitive { } syntax
-
-
-🎯 Preserve indentation (perfect for Python, YAML, JSON, etc.)
-
-
-💬 Support comments in structure files
-
-
-🚀 Fast & simple — build your whole project in one command
-
-
-
-📦 Installation
-✅ Recommended (via pip)
+```bash
 pip install mkarchi
-
+```
 Option 2: Install from source
+```bash
 git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 pip install -e .
-
+```
 Option 3: Run as module (no installation)
+```bash
 git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 python -m mkarchi apply structure.txt
+```
+---
 
-
-🚀 Quick Start
-1️⃣ Create a structure file
+# 🚀 Quick Start
+#### 1️⃣ Create a structure file
 Create a file called structure.txt:
+
+```text
 my_project/
 ├── src/
 │   ├── main.py{
@@ -66,13 +66,14 @@ my_project/
     pytest>=7.0.0
     requests>=2.28.0
 }
-
-
-2️⃣ Run mkarchi
+```
+### 2️⃣ Run mkarchi
+``` bash
 mkarchi apply structure.txt
-
-
-3️⃣ See the magic ✨
+```
+### 3️⃣ See the magic ✨
+```text
+Copy code
 🚀 Creating structure from structure.txt...
 
 📁 Created directory: my_project
@@ -85,45 +86,54 @@ mkarchi apply structure.txt
 📄 Created file with content: my_project/requirements.txt
 
 ✅ Architecture created successfully!
+```
+---
 
-
-📖 Usage
-Basic Commands
-# Create structure from file
+# 📖 Usage
+```bash
+# Generate structure
 mkarchi apply structure.txt
 
-# Show help
+# Help
 mkarchi --help
 
-# Show version
+# Version
 mkarchi --version
+```
+---
 
-
-📄 Structure File Format
-📁 Create Directories
+# 📄 Structure File Format
+### 📁 Create Directories
 Directories must end with /:
+
+```text
+Copy code
 my_folder/
 ├── subfolder/
 └── another_folder/
-
-
-📄 Create Empty Files
+```
+### 📄 Create Empty Files
 Files without { } are created empty:
+
+```text
 my_folder/
 ├── empty_file.txt
 └── config.json
-
-
-✍️ Create Files with Content
+```
+### ✍️ Create Files with Content
 Use { } to define file content:
+
+```text
 script.py{
     print("Hello!")
     print("This is Python code")
 }
-
-
-🎯 Indentation Preservation
+```
+### 🎯 Indentation Preservation
 mkarchi automatically preserves indentation:
+
+```text
+
 utils.py{
     def greet(name):
         if name:
@@ -131,40 +141,41 @@ utils.py{
         else:
             print("Hello, World!")
 }
-
+```
 Result (utils.py):
+
+```python
 def greet(name):
     if name:
         print(f"Hello, {name}!")
     else:
         print("Hello, World!")
-
-
-💬 Comments Support
+```
+### 💬 Comments Support
 Use # for comments in your structure file:
+
+```text
 project/
 ├── src/          # Source code
 │   └── main.py   # Entry point
 └── tests/        # Tests
+```
+# 🎯 Use Cases
+#### ⚡ Quick Prototyping
 
+#### 📦 Reusable project templates
 
-🎯 Use Cases
-⚡ Quick Prototyping
-mkarchi apply flask_template.txt
+#### 📘 Documentation & tutorials
 
-📦 Template Projects
-mkarchi apply team_template.txt
-
-📘 Documentation & Tutorials
-mkarchi apply tutorial_structure.txt
-
-🧩 Microservices
+#### 🧩 Microservices setup
+```bash
+Copy code
 mkarchi apply service1.txt
 mkarchi apply service2.txt
-
-
-🔧 Advanced Examples
-🐍 Python Project with Tests
+```
+---
+# 🔧 Advanced Example (Python Project)
+```text
 python_project/
 ├── src/
 │   ├── __init__.py
@@ -193,44 +204,40 @@ python_project/
 │   )
 │   }
 └── README.md
-
-
-🤝 Contributing
+```
+---
+# 🤝 Contributing
 Contributions are welcome! 🚀
-
 
 Fork the repository
 
+Create a feature branch:
 
-Create a feature branch
+```bash
 git checkout -b feature/amazing-feature
+```
+Commit your changes:
 
-
-
-Commit your changes
+```bash
 git commit -m "Add amazing feature"
+```
+Push to your branch:
 
-
-
-Push to your branch
+```bash
 git push origin feature/amazing-feature
-
-
-
+```
 Open a Pull Request
 
-
-
-📝 License
+#### 📝 License
 This project is licensed under the MIT License.
 See the LICENSE file for details.
 
-🐛 Issues & Feedback
+#### 🐛 Issues & Feedback
 Found a bug or have a feature request?
 Please open an issue on GitHub Issues.
 
-⭐ Support the Project
+#### ⭐ Support the Project
 If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
 
-❤️ Made with passion by Soufyan Rachdi
-
+---
+### ❤️ Made with passion by Soufyan Rachdi
