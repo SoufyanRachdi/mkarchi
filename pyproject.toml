@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkarchi"
+version = "0.1.0"
+description = "Create directory and file architecture from a tree structure text file"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Soufyan"}
+]
+keywords = ["cli", "architecture", "filesystem", "tree"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License"
+]
+
+[project.scripts]
+mkarchi = "mkarchi.cli:main"
