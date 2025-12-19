@@ -2,7 +2,8 @@ import os
 import sys
 import re
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
+
 def show_help():
     help_text = """
 mkarchi - Create project structure from tree files
@@ -30,6 +31,18 @@ Note: Directories should end with '/', files should not.
 
 def show_version():
     print(f"mkarchi version {__version__}")
+
+def vide(line):
+    for i in line:
+        if i != " " and i != "|" and i != "│":
+            return False
+    return True
+
+def clean(line):
+    if "#" in line:
+        return line[:line.find("#")].strip()
+    return line.strip()
+
 def parse_tree(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -37,7 +50,12 @@ def parse_tree(file_path):
     stack = []
     
     for line in lines:
-        if not line.strip():
+        if not line.strip() or vide(line):
+            continue
+        
+        line = clean(line)
+        
+        if not line:
             continue
         
         tree_match = re.search(r'[├└]', line)
@@ -58,8 +76,14 @@ def parse_tree(file_path):
             level = 0
             name = line.strip()
         
+        if not name:
+            continue
+        
         is_dir = name.endswith("/")
         name = name.rstrip("/")
+        
+        # Replace forward slashes with hyphens or underscores to avoid path issues
+        name = name.replace(" / ", "-")
         
         stack = stack[:level + 1]
         stack.append(name)
@@ -81,6 +105,7 @@ def main():
         print("Usage: mkarchi apply <structure_file>")
         print("Try 'mkarchi --help' for more information.")
         sys.exit(1)
+    
     command = sys.argv[1]
     
     if command == "--help":
@@ -109,5 +134,6 @@ def main():
         print(f"Unknown command: {command}")
         print("Try 'mkarchi --help' for more information.")
         sys.exit(1)
+
 if __name__ == "__main__":
     main()
