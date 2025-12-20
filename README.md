@@ -9,7 +9,7 @@ Define your entire project architecture — folders, files, and even file conten
 
 - 📁 Create directories from a tree structure  
 - 📄 Create empty files automatically  
-- ✍️ Create files with content using intuitive `{ }` syntax  
+- ✍️ Create files with content using intuitive `(begincontenu)` / `(endcontenu)` syntax  
 - 🎯 Preserve indentation (perfect for Python, YAML, JSON, etc.)  
 - 💬 Support comments in structure files  
 - 🚀 Fast & simple — build your whole project in one command  
@@ -44,28 +44,28 @@ Create a file called structure.txt:
 ```text
 my_project/
 ├── src/
-│   ├── main.py{
+│   ├── main.py(begincontenu)
 │   │   def main():
 │   │       print("Hello, World!")
 │   │
 │   │   if __name__ == "__main__":
 │   │       main()
-│   }
-│   └── utils.py{
+│   (endcontenu)
+│   └── utils.py(begincontenu)
 │       def helper():
 │           return "Helper function"
-│   }
+│   (endcontenu)
 ├── tests/
 │   └── test_main.py
-├── README.md{
+├── README.md(begincontenu)
 │   # My Project
 │
 │   This is an awesome project!
-│   }
-└── requirements.txt{
+│   (endcontenu)
+└── requirements.txt(begincontenu)
     pytest>=7.0.0
     requests>=2.28.0
-}
+(endcontenu)
 ```
 ### 2️⃣ Run mkarchi
 ``` bash
@@ -73,7 +73,6 @@ mkarchi apply structure.txt
 ```
 ### 3️⃣ See the magic ✨
 ```text
-Copy code
 🚀 Creating structure from structure.txt...
 
 📁 Created directory: my_project
@@ -107,13 +106,12 @@ mkarchi --version
 Directories must end with /:
 
 ```text
-Copy code
 my_folder/
 ├── subfolder/
 └── another_folder/
 ```
 ### 📄 Create Empty Files
-Files without { } are created empty:
+Files without `(begincontenu)` / `(endcontenu)` are created empty:
 
 ```text
 my_folder/
@@ -121,26 +119,25 @@ my_folder/
 └── config.json
 ```
 ### ✍️ Create Files with Content
-Use { } to define file content:
+Use `(begincontenu)` and `(endcontenu)` to define file content:
 
 ```text
-script.py{
+script.py(begincontenu)
     print("Hello!")
     print("This is Python code")
-}
+(endcontenu)
 ```
 ### 🎯 Indentation Preservation
 mkarchi automatically preserves indentation:
 
 ```text
-
-utils.py{
+utils.py(begincontenu)
     def greet(name):
         if name:
             print(f"Hello, {name}!")
         else:
             print("Hello, World!")
-}
+(endcontenu)
 ```
 Result (utils.py):
 
@@ -169,7 +166,6 @@ project/
 
 #### 🧩 Microservices setup
 ```bash
-Copy code
 mkarchi apply service1.txt
 mkarchi apply service2.txt
 ```
@@ -179,22 +175,22 @@ mkarchi apply service2.txt
 python_project/
 ├── src/
 │   ├── __init__.py
-│   └── main.py{
+│   └── main.py(begincontenu)
 │       """Main module."""
 │
 │       def main():
 │           print("Starting application...")
-│   }
+│   (endcontenu)
 ├── tests/
 │   ├── __init__.py
-│   └── test_main.py{
+│   └── test_main.py(begincontenu)
 │       import pytest
 │       from src.main import main
 │
 │       def test_main():
 │           assert main() is None
-│   }
-├── setup.py{
+│   (endcontenu)
+├── setup.py(begincontenu)
 │   from setuptools import setup, find_packages
 │
 │   setup(
@@ -202,7 +198,7 @@ python_project/
 │       version="0.1.0",
 │       packages=find_packages(),
 │   )
-│   }
+│   (endcontenu)
 └── README.md
 ```
 ---
