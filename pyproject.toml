@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mkarchi"
-version = "0.1.3"
+version = "0.1.4"
 description = "Create directory and file architecture from a tree structure text file"
 readme = "README.md"
 requires-python = ">=3.7"

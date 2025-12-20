@@ -4,7 +4,7 @@ mkarchi - Create project structure from tree files
 import os
 import re
 
-__version__ = "0.2.0"
+__version__ = "0.1.4"
 
 HELP_TEXT = """
 mkarchi - Create project structure from tree files
