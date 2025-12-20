@@ -4,7 +4,7 @@ mkarchi - Create project structure from tree files
 import os
 import re
 
-__version__ = "0.1.1"
+__version__ = "0.1.3"
 
 HELP_TEXT = """
 mkarchi - Create project structure from tree files
@@ -45,7 +45,7 @@ Note:
 def is_empty_line(line):
     """Check if line contains only spaces and tree characters."""
     for char in line:
-        if char not in (' ', '|', '│'):
+        if char not in (' ', '|', '│', '├', '└', '─'):
             return False
     return True
 
@@ -130,6 +130,7 @@ def parse_tree(file_path):
                 i += 1
                 continue
         
+        # Skip empty lines or lines with only tree characters
         if not line.strip() or is_empty_line(line):
             i += 1
             continue
@@ -140,6 +141,7 @@ def parse_tree(file_path):
             i += 1
             continue
         
+        # Look for tree structure markers (├ or └)
         tree_match = re.search(r'[├└]', line)
         
         if tree_match:
@@ -149,6 +151,7 @@ def parse_tree(file_path):
             else:
                 level = (indent // 4)
             
+            # Extract the name after the tree characters
             name_match = re.search(r'[├└]\s*─+\s*(.+)', line)
             if name_match:
                 name = name_match.group(1).strip()
@@ -156,10 +159,18 @@ def parse_tree(file_path):
                 i += 1
                 continue
         else:
+            # No tree characters, could be root level
             level = 0
             name = cleaned
         
-        if not name:
+        # Validate the name - it should have alphanumeric characters
+        # Skip if it's just tree characters or symbols
+        if not name or not re.search(r'[a-zA-Z0-9_\-.]', name):
+            i += 1
+            continue
+        
+        # Additional check: skip if name is just tree characters
+        if all(char in ('│', '├', '└', '─', '|', ' ', '}') for char in name):
             i += 1
             continue
         
@@ -168,6 +179,11 @@ def parse_tree(file_path):
         if "{" in name:
             has_content = True
             name = name.split("{")[0].strip()
+        
+        # After splitting on {, check again if name is valid
+        if not name or not re.search(r'[a-zA-Z0-9_\-.]', name):
+            i += 1
+            continue
         
         is_dir = name.endswith("/")
         name = name.rstrip("/")
@@ -195,7 +211,7 @@ def parse_tree(file_path):
                 content_base_indent = 0
             else:
                 # Create empty file
-                with open(path, "w"):
+                with open(path, "w", encoding="utf-8"):
                     pass
                 print(f"📄 Created file: {path}")
         
