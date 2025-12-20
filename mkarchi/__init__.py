@@ -4,7 +4,7 @@ mkarchi - Create project structure from tree files
 import os
 import re
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 HELP_TEXT = """
 mkarchi - Create project structure from tree files
@@ -167,10 +167,12 @@ def parse_tree(file_path):
         
         if tree_match:
             indent = tree_match.start()
-            if indent == 0:
-                level = 0
-            else:
-                level = (indent // 4)
+            
+            # Count the number of │ or | characters before ├ or └ to determine level
+            level = 0
+            for char in line[:indent]:
+                if char in ('│', '|'):
+                    level += 1
             
             # Extract the name after the tree characters
             name_match = re.search(r'[├└]\s*─+\s*(.+)', line)
