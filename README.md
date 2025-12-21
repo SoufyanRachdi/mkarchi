@@ -1,18 +1,20 @@
 # 🏗️ mkarchi
 
-mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files.  
-Define your entire project architecture — folders, files, and even file contents — in one readable text file, then generate it instantly with a single command.
+mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.6, it can also generate mkarchi syntax from an existing project.
+
+Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
 
 ---
 
 # ✨ Features
 
-- 📁 Create directories from a tree structure  
-- 📄 Create empty files automatically  
-- ✍️ Create files with content using intuitive `(begincontenu)` / `(endcontenu)` syntax  
-- 🎯 Preserve indentation (perfect for Python, YAML, JSON, etc.)  
-- 💬 Support comments in structure files  
-- 🚀 Fast & simple — build your whole project in one command  
+📁 Create directories from a tree structure
+📄 Create empty files automatically
+✍️ Create files with content using (begincontenu) / (endcontenu)
+🎯 Preserve indentation (perfect for Python, YAML, JSON…)
+💬 Support comments inside structure files
+🔄 Generate mkarchi structure from existing folders (NEW in v0.1.6)
+🚀 Fast, simple, and AI-friendly
 
 ---
 
@@ -90,18 +92,36 @@ mkarchi apply structure.txt
 
 # 📖 Usage
 ```bash
-# Generate structure
 mkarchi apply structure.txt
-
-# Help
+mkarchi give [options] [output_file]
 mkarchi --help
-
-# Version
 mkarchi --version
+mkarchi -v
+
 ```
 ---
+# 🔄 NEW: mkarchi give (v0.1.6)
+Generate mkarchi syntax from your current directory.
+#### Default behavior
+```bash
+mkarchi give
+```
+➡️ Generates structure.txt
+➡️ Includes file contents
+
+#### Generate structure without file contents
+```bash
+mkarchi give -c
+```
+or
+```bash
+mkarchi give -c myproject.txt
+
+```
+
 
 # 📄 Structure File Format
+
 ### 📁 Create Directories
 Directories must end with /:
 
@@ -158,13 +178,13 @@ project/
 └── tests/        # Tests
 ```
 # 🎯 Use Cases
-#### ⚡ Quick Prototyping
 
-#### 📦 Reusable project templates
-
+#### ⚡ Rapid project scaffolding
+#### 📦 Reusable templates
+#### 🤖 AI-generated architectures
 #### 📘 Documentation & tutorials
 
-#### 🧩 Microservices setup
+🧩 Microservices setup
 ```bash
 mkarchi apply service1.txt
 mkarchi apply service2.txt
