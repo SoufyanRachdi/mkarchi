@@ -8,10 +8,10 @@ import os
 if __name__ == "__main__" and __package__ is None:
     # Direct execution: add parent directory to path
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from mkarchi import __version__, HELP_TEXT, apply_structure
+    from mkarchi import __version__, HELP_TEXT, apply_structure, give_structure
 else:
     # Package import
-    from . import __version__, HELP_TEXT, apply_structure
+    from . import __version__, HELP_TEXT, apply_structure, give_structure
 
 
 def show_help():
@@ -27,7 +27,7 @@ def show_version():
 def main():
     """Main entry point for the CLI."""
     if len(sys.argv) < 2:
-        print("Usage: mkarchi apply <structure_file>")
+        print("Usage: mkarchi <command> [options]")
         print("Try 'mkarchi --help' for more information.")
         sys.exit(1)
     
@@ -56,6 +56,26 @@ def main():
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
+    
+    elif command == "give":
+        # Parse options
+        include_content = True
+        output_file = "structure.txt"
+        
+        # Check for -c or --no-content flag
+        args = sys.argv[2:]
+        for arg in args:
+            if arg == "-c" or arg == "--no-content":
+                include_content = False
+            elif not arg.startswith("-"):
+                output_file = arg
+        
+        try:
+            give_structure(output_file, include_content)
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            sys.exit(1)
+    
     else:
         print(f"Unknown command: {command}")
         print("Try 'mkarchi --help' for more information.")

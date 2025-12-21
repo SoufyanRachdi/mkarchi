@@ -11,12 +11,20 @@ mkarchi - Create project structure from tree files
 
 Usage:
     mkarchi apply <structure_file>    Create directories and files from structure file
+    mkarchi give [options] [output_file]        Generate structure file from current directory
     mkarchi --help                    Show this help message
     mkarchi --version                 Show version number
     mkarchi -v                        Show version number
 
-Example:
-    mkarchi apply structure.txt
+Examples:
+    mkarchi apply structure.txt       # Create structure from file
+    mkarchi give                      # Generate structure.txt with file contents
+    mkarchi give -c                   # Generate structure.txt without file contents
+    mkarchi give myproject.txt        # Generate myproject.txt with contents
+    mkarchi give -c myproject.txt     # Generate myproject.txt without contents
+
+Options for 'give' command:
+    -c, --no-content                  Don't include file contents (structure only)
 
 Structure file format:
     project/
@@ -260,3 +268,150 @@ def apply_structure(structure_file):
     print(f"🚀 Creating structure from {structure_file}...\n")
     parse_tree(structure_file)
     print("\n✅ Architecture created successfully!")
+
+
+def should_ignore(path, name):
+    """
+    Check if a file or directory should be ignored.
+    
+    Args:
+        path: The full path to check
+        name: The name of the file/directory
+        
+    Returns:
+        True if should be ignored, False otherwise
+    """
+    ignore_patterns = [
+        '__pycache__',
+        '.git',
+        '.gitignore',
+        'node_modules',
+        '.env',
+        '.venv',
+        'venv',
+        '.pytest_cache',
+        '.mypy_cache',
+        '__pycache__',
+        '*.pyc',
+        '*.pyo',
+        '*.egg-info',
+        'dist',
+        'build',
+        '.DS_Store',
+        'Thumbs.db',
+    ]
+    
+    for pattern in ignore_patterns:
+        if pattern.startswith('*.'):
+            # Pattern match
+            if name.endswith(pattern[1:]):
+                return True
+        else:
+            # Exact match
+            if name == pattern:
+                return True
+    
+    return False
+
+
+def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, base_dir=None, include_content=True):
+    """
+    Generate a tree structure of the directory in mkarchi format.
+    
+    Args:
+        directory: Directory to scan
+        prefix: Prefix for tree drawing
+        output_lines: List to collect output lines
+        is_last: Whether this is the last item in current level
+        base_dir: Base directory for relative paths
+        include_content: Whether to include file contents
+        
+    Returns:
+        List of output lines
+    """
+    if output_lines is None:
+        output_lines = []
+    
+    if base_dir is None:
+        base_dir = directory
+        # Add root directory name
+        root_name = os.path.basename(os.path.abspath(directory))
+        if not root_name:
+            root_name = "project"
+        output_lines.append(f"{root_name}/")
+    
+    try:
+        items = sorted(os.listdir(directory))
+        # Filter out ignored items
+        items = [item for item in items if not should_ignore(os.path.join(directory, item), item)]
+    except PermissionError:
+        return output_lines
+    
+    # Separate directories and files
+    dirs = [item for item in items if os.path.isdir(os.path.join(directory, item))]
+    files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
+    
+    all_items = dirs + files
+    
+    for i, item in enumerate(all_items):
+        is_last_item = (i == len(all_items) - 1)
+        item_path = os.path.join(directory, item)
+        
+        # Determine the connector
+        if is_last_item:
+            connector = "└─"
+            new_prefix = prefix + "   "
+        else:
+            connector = "├─"
+            new_prefix = prefix + "│  "
+        
+        if os.path.isdir(item_path):
+            # Directory
+            output_lines.append(f"{prefix}{connector} {item}/")
+            generate_tree(item_path, new_prefix, output_lines, is_last_item, base_dir, include_content)
+        else:
+            # File
+            if include_content:
+                try:
+                    # Try to read file content
+                    with open(item_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    # Only include content for text files under 10KB
+                    if len(content) < 10240:
+                        output_lines.append(f"{prefix}{connector} {item}(begincontenu)")
+                        # Add content with proper indentation
+                        for line in content.split('\n'):
+                            if line or content:  # Include empty lines
+                                output_lines.append(f"{new_prefix}{line}")
+                        output_lines.append(f"{new_prefix}(endcontenu)")
+                    else:
+                        # File too large, skip content
+                        output_lines.append(f"{prefix}{connector} {item}")
+                except (UnicodeDecodeError, PermissionError):
+                    # Binary file or no permission, skip content
+                    output_lines.append(f"{prefix}{connector} {item}")
+            else:
+                output_lines.append(f"{prefix}{connector} {item}")
+    
+    return output_lines
+
+
+def give_structure(output_file="structure.txt", include_content=True):
+    """
+    Generate a structure file from the current directory.
+    
+    Args:
+        output_file: Output file name (default: structure.txt)
+        include_content: Whether to include file contents
+    """
+    print(f"🔍 Scanning current directory...\n")
+    
+    output_lines = generate_tree(".", include_content=include_content)
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(output_lines))
+    
+    print(f"✅ Structure file created: {output_file}")
+    print(f"📊 Total items: {len(output_lines)} lines")
+    print(f"\n💡 You can now share this file with ChatGPT or use 'mkarchi apply {output_file}' to recreate the structure.")
