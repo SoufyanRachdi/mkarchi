@@ -257,3 +257,6 @@ If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
 
 ---
 ### ❤️ Made with passion by Soufyan Rachdi
+
+
+![mkarchi logo](assets/logo.png)
