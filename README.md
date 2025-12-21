@@ -5,7 +5,8 @@ mkarchi (make architecture) is a command-line tool that generates complete proje
 Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
 
 ---
-
+![mkarchi logo](assets/logo.png)
+---
 # ✨ Features
 
 📁 Create directories from a tree structure
@@ -259,4 +260,4 @@ If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
 ### ❤️ Made with passion by Soufyan Rachdi
 
 
-![mkarchi logo](assets/logo.png)
+
