@@ -7,28 +7,6 @@ Design your architecture once, apply it anywhere, or reverse-engineer your folde
 ---
 ![mkarchi logo](assets/logo.png)
 ---
-## 📖 You can now learn mkarchi step by step with real examples and documentation on the official website:
-👉 https://mkarchi.vercel.app
-# ✨ Features
-
-📁 Create directories from a tree structure
-📄 Create empty files automatically
-✍️ Create files with content using (begincontenu) / (endcontenu)
-🎯 Preserve indentation (perfect for Python, YAML, JSON…)
-💬 Support comments inside structure files
-🔄 Generate mkarchi structure from existing folders (NEW in v0.1.6)
-🚀 Fast, simple, and AI-friendly
-
----
-# 🏗️ mkarchi
-
-mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.6, it can also generate mkarchi syntax from an existing project.
-
-Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
-
----
-![mkarchi logo](assets/logo.png)
----
 # ✨ Features
 
 📁 Create directories from a tree structure
