@@ -1,68 +1,10 @@
 """
 mkarchi - Create project structure from tree files
 """
+from .data import __version__, HELP_TEXT, is_empty_line, clean_line
 import os
 import re
-
-__version__ = "0.1.6"
-
-HELP_TEXT = """
-mkarchi - Create project structure from tree files
-
-Usage:
-    mkarchi apply <structure_file>    Create directories and files from structure file
-    mkarchi give [options] [output_file]        Generate structure file from current directory
-    mkarchi --help                    Show this help message
-    mkarchi --version                 Show version number
-    mkarchi -v                        Show version number
-
-Examples:
-    mkarchi apply structure.txt       # Create structure from file
-    mkarchi give                      # Generate structure.txt with file contents
-    mkarchi give -c                   # Generate structure.txt without file contents
-    mkarchi give myproject.txt        # Generate myproject.txt with contents
-    mkarchi give -c myproject.txt     # Generate myproject.txt without contents
-
-Options for 'give' command:
-    -c, --no-content                  Don't include file contents (structure only)
-
-Structure file format:
-    project/
-    ├── src/
-    │   ├── main.py(begincontenu)
-    │   │   print("Hello World")
-    │   │   (endcontenu)
-    │   └── utils.py
-    ├── README.md(begincontenu)
-    │   # My Project
-    │   This is a sample project.
-    │   (endcontenu)
-    └── requirements.txt
-
-Note: 
-    - Directories should end with '/'
-    - Files without content should not have markers
-    - Files with content should use '(begincontenu)' and '(endcontenu)' markers:
-      filename.ext(begincontenu)
-          content line 1
-          content line 2
-          (endcontenu)
-"""
-
-
-def is_empty_line(line):
-    """Check if line contains only spaces and tree characters."""
-    for char in line:
-        if char not in (' ', '|', '│', '├', '└', '─'):
-            return False
-    return True
-
-
-def clean_line(line):
-    """Remove comments and strip whitespace from line."""
-    if "#" in line:
-        return line[:line.find("#")].strip()
-    return line.strip()
+import sys
 
 
 def extract_content_from_line(line, base_indent):
@@ -314,7 +256,58 @@ def should_ignore(path, name):
     return False
 
 
-def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, base_dir=None, include_content=True):
+def count_files(directory="."):
+    """
+    Count total number of files to process (for progress bar).
+    
+    Args:
+        directory: Directory to count files in
+        
+    Returns:
+        Total number of files
+    """
+    total = 0
+    try:
+        for root, dirs, files in os.walk(directory):
+            # Filter ignored directories
+            dirs[:] = [d for d in dirs if not should_ignore(os.path.join(root, d), d)]
+            # Count non-ignored files
+            for f in files:
+                if not should_ignore(os.path.join(root, f), f):
+                    total += 1
+    except PermissionError:
+        pass
+    return total
+
+
+def print_progress_bar(current, total, bar_length=40):
+    """
+    Print a progress bar.
+    
+    Args:
+        current: Current progress value
+        total: Total value
+        bar_length: Length of the progress bar in characters
+    """
+    if total == 0:
+        percent = 100
+    else:
+        percent = int((current / total) * 100)
+    
+    filled = int((bar_length * current) / total) if total > 0 else bar_length
+    bar = '=' * filled + '-' * (bar_length - filled)
+    
+    # Use \r to overwrite the same line
+    sys.stdout.write(f'\r[{bar}] {percent}% ({current}/{total} files)')
+    sys.stdout.flush()
+    
+    # Print newline when complete
+    if current >= total:
+        print()
+
+
+def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, base_dir=None, 
+                 include_content=True, max_size_kb=10, progress_info=None):
     """
     Generate a tree structure of the directory in mkarchi format.
     
@@ -325,6 +318,8 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
         is_last: Whether this is the last item in current level
         base_dir: Base directory for relative paths
         include_content: Whether to include file contents
+        max_size_kb: Maximum file size in KB to include content
+        progress_info: Dictionary with 'current' and 'total' for progress tracking
         
     Returns:
         List of output lines
@@ -368,17 +363,26 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
         if os.path.isdir(item_path):
             # Directory
             output_lines.append(f"{prefix}{connector} {item}/")
-            generate_tree(item_path, new_prefix, output_lines, is_last_item, base_dir, include_content)
+            generate_tree(item_path, new_prefix, output_lines, is_last_item, base_dir, 
+                         include_content, max_size_kb, progress_info)
         else:
-            # File
+            # File - update progress
+            if progress_info:
+                progress_info['current'] += 1
+                print_progress_bar(progress_info['current'], progress_info['total'])
+            
             if include_content:
                 try:
+                    # Get file size
+                    file_size_kb = os.path.getsize(item_path) / 1024
+                    
                     # Try to read file content
                     with open(item_path, 'r', encoding='utf-8') as f:
                         content = f.read()
                     
-                    # Only include content for text files under 10KB
-                    if len(content) < 10240:
+                    # Check if file is within size limit and has content
+                    if file_size_kb <= max_size_kb and content.strip():
+                        # File has content and is small enough
                         output_lines.append(f"{prefix}{connector} {item}(begincontenu)")
                         # Add content with proper indentation
                         for line in content.split('\n'):
@@ -386,7 +390,7 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
                                 output_lines.append(f"{new_prefix}{line}")
                         output_lines.append(f"{new_prefix}(endcontenu)")
                     else:
-                        # File too large, skip content
+                        # File too large or empty, skip content markers
                         output_lines.append(f"{prefix}{connector} {item}")
                 except (UnicodeDecodeError, PermissionError):
                     # Binary file or no permission, skip content
@@ -397,21 +401,47 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
     return output_lines
 
 
-def give_structure(output_file="structure.txt", include_content=True):
+def give_structure(output_file="structure.txt", include_content=True, max_size_kb=10):
     """
     Generate a structure file from the current directory.
     
     Args:
         output_file: Output file name (default: structure.txt)
         include_content: Whether to include file contents
+        max_size_kb: Maximum file size in KB to include content
     """
     print(f"🔍 Scanning current directory...\n")
     
-    output_lines = generate_tree(".", include_content=include_content)
+    # Count total files for progress bar
+    total_files = count_files(".")
+    print(f"📊 Found {total_files} files to process\n")
+    
+    # Progress tracking
+    progress_info = {'current': 0, 'total': total_files}
+    
+    output_lines = generate_tree(".", include_content=include_content, 
+                                 max_size_kb=max_size_kb, progress_info=progress_info)
+    
+    print()  # New line after progress bar
     
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(output_lines))
     
-    print(f"✅ Structure file created: {output_file}")
+    print(f"\n✅ Structure file created: {output_file}")
     print(f"📊 Total items: {len(output_lines)} lines")
-    print(f"\n💡 You can now share this file with ChatGPT or use 'mkarchi apply {output_file}' to recreate the structure.")
+    if include_content:
+        if max_size_kb == float('inf'):
+            print(f"📏 Max file size: No limit (all files included)")
+        else:
+            print(f"📏 Max file size included: {max_size_kb} KB")
+    print(f"\n💡 You can now share this file or use 'mkarchi apply {output_file}' to recreate the structure.")
+
+
+__all__ = [
+    '__version__',
+    'HELP_TEXT',
+    'apply_structure',
+    'give_structure',
+    'is_empty_line',
+    'clean_line',
+]

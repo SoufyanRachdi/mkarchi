@@ -61,17 +61,27 @@ def main():
         # Parse options
         include_content = True
         output_file = "structure.txt"
+        max_size_kb = 10  # Default 10 KB
         
-        # Check for -c or --no-content flag
+        # Check for flags
         args = sys.argv[2:]
-        for arg in args:
+        for i, arg in enumerate(args):
             if arg == "-c" or arg == "--no-content":
                 include_content = False
+            elif arg == "--no-max":
+                max_size_kb = float('inf')  # No limit
+            elif arg.startswith("-max="):
+                try:
+                    max_size_kb = int(arg.split("=")[1])
+                except ValueError:
+                    print(f"❌ Invalid max size: {arg}")
+                    print("Usage: -max=<size_in_kb> (e.g., -max=100)")
+                    sys.exit(1)
             elif not arg.startswith("-"):
                 output_file = arg
         
         try:
-            give_structure(output_file, include_content)
+            give_structure(output_file, include_content, max_size_kb)
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
