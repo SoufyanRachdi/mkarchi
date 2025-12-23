@@ -6,6 +6,7 @@ Design your architecture once, apply it anywhere, or reverse-engineer your folde
 
 ---
 ![mkarchi logo](assets/logo.png)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/mkarchi?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mkarchi)
 ---
 # ✨ Features
 
