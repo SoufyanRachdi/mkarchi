@@ -21,10 +21,27 @@ Examples:
     mkarchi give -max=100                       # Include files up to 100 KB
     mkarchi give -max=50 myproject.txt          # Generate myproject.txt with 50 KB max size
     mkarchi give -c myproject.txt               # Generate myproject.txt without contents
+    mkarchi give --no-ignore                    # Include ALL files (ignore nothing)
+    mkarchi give --no-ignore -max=100           # Include all files up to 100 KB
 
 Options for 'give' command:
     -c, --no-content                            Don't include file contents (structure only)
     -max=<size_in_kb>                           Maximum file size in KB to include content (default: 10)
+    --no-ignore                                 Disable all ignore patterns (built-in + .mkarchiignore)
+
+Ignore patterns:
+    By default, mkarchi ignores common files like node_modules, .git, __pycache__, etc.
+    
+    You can customize this by creating a .mkarchiignore file in your project root:
+        # .mkarchiignore example
+        node_modules
+        .env*
+        *.log
+        dist
+        build
+        temp/
+    
+    Use --no-ignore to disable all ignoring (useful for complete backups).
 
 Structure file format:
     project/
