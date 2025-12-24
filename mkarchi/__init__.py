@@ -70,6 +70,7 @@ def parse_tree(file_path):
     current_file_path = None
     collecting_content = False
     content_base_indent = None
+    root_name = None
     
     i = 0
     while i < len(lines):
@@ -140,13 +141,12 @@ def parse_tree(file_path):
         tree_match = re.search(r'[├└]', line)
         
         if tree_match:
-            indent = tree_match.start()
+            indent_pos = tree_match.start()
             
-            # Count the number of │ or | characters before ├ or └ to determine level
-            level = 0
-            for char in line[:indent]:
-                if char in ('│', '|'):
-                    level += 1
+            # KEY FIX: Calculate level based on the position of ├ or └
+            # Each level is 3 characters wide in the tree structure (│  or    )
+            # The indent position divided by 3 gives us the level
+            level = indent_pos // 3
             
             # Extract the name after the tree characters
             name_match = re.search(r'[├└]\s*─+\s*(.+)', line)
@@ -156,8 +156,8 @@ def parse_tree(file_path):
                 i += 1
                 continue
         else:
-            # No tree characters, could be root level
-            level = 0
+            # No tree characters, this is the root level
+            level = -1  # Root directory
             name = cleaned
         
         # Validate the name - it should have alphanumeric characters
@@ -183,6 +183,24 @@ def parse_tree(file_path):
         # Replace forward slashes with hyphens to avoid path issues
         name = name.replace(" / ", "-")
         
+        # Handle root directory
+        if level == -1:
+            root_name = name
+            stack = [name]
+            path = name
+            try:
+                os.makedirs(path, exist_ok=True)
+                print(f"📁 Created root directory: {path}")
+            except PermissionError:
+                raise MkarchiPermissionError(path)
+            except Exception as e:
+                raise InvalidStructureError(f"Could not create {path}: {str(e)}")
+            i += 1
+            continue
+        
+        # For non-root items, maintain proper stack depth
+        # level 0 means direct child of root (level 1 in stack)
+        # level 1 means child of level 0 item (level 2 in stack), etc.
         stack = stack[:level + 1]
         stack.append(name)
         path = os.path.join(*stack)
@@ -226,8 +244,6 @@ def parse_tree(file_path):
             raise MkarchiPermissionError(current_file_path)
         except Exception as e:
             raise InvalidStructureError(f"Could not create file {current_file_path}: {str(e)}")
-
-
 def apply_structure(structure_file):
     """
     Apply a structure file to create directories and files.

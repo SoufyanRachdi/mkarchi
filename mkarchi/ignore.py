@@ -99,23 +99,17 @@ def should_ignore(path, name, ignore_patterns):
         return False
     
     for pattern in ignore_patterns:
+        # Remove trailing slash from pattern if present (for directory patterns)
+        pattern = pattern.rstrip('/')
+        
         # Check for glob pattern (contains * or ?)
         if '*' in pattern or '?' in pattern:
-            # Glob match against name
+            # Glob match against name only
             if fnmatch.fnmatch(name, pattern):
                 return True
-            # Also try matching against full path for patterns like "src/*.py"
-            if fnmatch.fnmatch(path, pattern):
-                return True
-            if fnmatch.fnmatch(path, f"*/{pattern}"):
-                return True
         else:
-            # Exact match against name
+            # Exact match: pattern must match the filename exactly
             if name == pattern:
-                return True
-            # Also check if it's anywhere in the path
-            path_parts = path.split(os.sep)
-            if pattern in path_parts:
                 return True
     
     return False
