@@ -2,6 +2,13 @@
 mkarchi - Create project structure from tree files
 """
 from .data import __version__, HELP_TEXT, is_empty_line, clean_line
+from .error import (
+    MkarchiError,
+    FileNotFoundError as MkarchiFileNotFoundError,
+    InvalidStructureError,
+    PermissionError as MkarchiPermissionError,
+)
+from .ignore import get_ignore_patterns, should_ignore as should_ignore_pattern
 import os
 import re
 import sys
@@ -42,9 +49,21 @@ def parse_tree(file_path):
     
     Args:
         file_path: Path to the structure file to parse
+        
+    Raises:
+        MkarchiFileNotFoundError: If the structure file doesn't exist
+        InvalidStructureError: If the structure file has invalid syntax
+        MkarchiPermissionError: If there's a permission issue
     """
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        raise MkarchiFileNotFoundError(file_path)
+    except PermissionError:
+        raise MkarchiPermissionError(file_path)
+    except Exception as e:
+        raise InvalidStructureError(f"Could not read file: {str(e)}")
     
     stack = []
     current_file_content = []
@@ -62,11 +81,16 @@ def parse_tree(file_path):
             if "(endcontenu)" in line:
                 # Save the content to file
                 if current_file_path:
-                    with open(current_file_path, "w", encoding="utf-8") as f:
-                        if current_file_content:
-                            f.write("\n".join(current_file_content))
-                            f.write("\n")
-                    print(f"📄 Created file with content: {current_file_path}")
+                    try:
+                        with open(current_file_path, "w", encoding="utf-8") as f:
+                            if current_file_content:
+                                f.write("\n".join(current_file_content))
+                                f.write("\n")
+                        print(f"📄 Created file with content: {current_file_path}")
+                    except PermissionError:
+                        raise MkarchiPermissionError(current_file_path)
+                    except Exception as e:
+                        raise InvalidStructureError(f"Could not create file {current_file_path}: {str(e)}")
                     
                 collecting_content = False
                 current_file_content = []
@@ -163,35 +187,45 @@ def parse_tree(file_path):
         stack.append(name)
         path = os.path.join(*stack)
         
-        if is_dir:
-            os.makedirs(path, exist_ok=True)
-            print(f"📁 Created directory: {path}")
-        else:
-            dir_path = os.path.dirname(path)
-            if dir_path:
-                os.makedirs(dir_path, exist_ok=True)
-            
-            if has_content:
-                # Start collecting content
-                collecting_content = True
-                current_file_path = path
-                current_file_content = []
-                content_base_indent = None
+        try:
+            if is_dir:
+                os.makedirs(path, exist_ok=True)
+                print(f"📁 Created directory: {path}")
             else:
-                # Create empty file
-                with open(path, "w", encoding="utf-8"):
-                    pass
-                print(f"📄 Created file: {path}")
+                dir_path = os.path.dirname(path)
+                if dir_path:
+                    os.makedirs(dir_path, exist_ok=True)
+                
+                if has_content:
+                    # Start collecting content
+                    collecting_content = True
+                    current_file_path = path
+                    current_file_content = []
+                    content_base_indent = None
+                else:
+                    # Create empty file
+                    with open(path, "w", encoding="utf-8"):
+                        pass
+                    print(f"📄 Created file: {path}")
+        except PermissionError:
+            raise MkarchiPermissionError(path)
+        except Exception as e:
+            raise InvalidStructureError(f"Could not create {path}: {str(e)}")
         
         i += 1
     
     # Handle case where file ends while still collecting content
     if collecting_content and current_file_path:
-        with open(current_file_path, "w", encoding="utf-8") as f:
-            if current_file_content:
-                f.write("\n".join(current_file_content))
-                f.write("\n")
-        print(f"📄 Created file with content: {current_file_path}")
+        try:
+            with open(current_file_path, "w", encoding="utf-8") as f:
+                if current_file_content:
+                    f.write("\n".join(current_file_content))
+                    f.write("\n")
+            print(f"📄 Created file with content: {current_file_path}")
+        except PermissionError:
+            raise MkarchiPermissionError(current_file_path)
+        except Exception as e:
+            raise InvalidStructureError(f"Could not create file {current_file_path}: {str(e)}")
 
 
 def apply_structure(structure_file):
@@ -202,78 +236,42 @@ def apply_structure(structure_file):
         structure_file: Path to the structure file
         
     Raises:
-        FileNotFoundError: If the structure file doesn't exist
+        MkarchiFileNotFoundError: If the structure file doesn't exist
+        InvalidStructureError: If the structure file has invalid syntax
+        MkarchiPermissionError: If there's a permission issue
     """
     if not os.path.exists(structure_file):
-        raise FileNotFoundError(f"File not found: {structure_file}")
+        raise MkarchiFileNotFoundError(structure_file)
     
     print(f"🚀 Creating structure from {structure_file}...\n")
     parse_tree(structure_file)
     print("\n✅ Architecture created successfully!")
 
 
-def should_ignore(path, name):
-    """
-    Check if a file or directory should be ignored.
-    
-    Args:
-        path: The full path to check
-        name: The name of the file/directory
-        
-    Returns:
-        True if should be ignored, False otherwise
-    """
-    ignore_patterns = [
-        '__pycache__',
-        '.git',
-        '.gitignore',
-        'node_modules',
-        '.env',
-        '.venv',
-        'venv',
-        '.pytest_cache',
-        '.mypy_cache',
-        '__pycache__',
-        '*.pyc',
-        '*.pyo',
-        '*.egg-info',
-        'dist',
-        'build',
-        '.DS_Store',
-        'Thumbs.db',
-    ]
-    
-    for pattern in ignore_patterns:
-        if pattern.startswith('*.'):
-            # Pattern match
-            if name.endswith(pattern[1:]):
-                return True
-        else:
-            # Exact match
-            if name == pattern:
-                return True
-    
-    return False
-
-
-def count_files(directory="."):
+def count_files(directory=".", ignore_patterns=None):
     """
     Count total number of files to process (for progress bar).
     
     Args:
         directory: Directory to count files in
+        ignore_patterns: List of patterns to ignore (None = no ignoring)
         
     Returns:
         Total number of files
     """
+    if ignore_patterns is None:
+        ignore_patterns = []
+    
     total = 0
     try:
         for root, dirs, files in os.walk(directory):
             # Filter ignored directories
-            dirs[:] = [d for d in dirs if not should_ignore(os.path.join(root, d), d)]
+            dirs[:] = [d for d in dirs if not should_ignore_pattern(
+                os.path.join(root, d), d, ignore_patterns
+            )]
             # Count non-ignored files
             for f in files:
-                if not should_ignore(os.path.join(root, f), f):
+                if not should_ignore_pattern(os.path.join(root, f), f, ignore_patterns):
                     total += 1
     except PermissionError:
         pass
@@ -307,7 +305,7 @@ def print_progress_bar(current, total, bar_length=40):
 
 
 def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, base_dir=None, 
-                 include_content=True, max_size_kb=10, progress_info=None):
+                 include_content=True, max_size_kb=10, progress_info=None, ignore_patterns=None):
     """
     Generate a tree structure of the directory in mkarchi format.
     
@@ -320,12 +318,16 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
         include_content: Whether to include file contents
         max_size_kb: Maximum file size in KB to include content
         progress_info: Dictionary with 'current' and 'total' for progress tracking
+        ignore_patterns: List of patterns to ignore (None = no ignoring)
         
     Returns:
         List of output lines
     """
     if output_lines is None:
         output_lines = []
+    
+    if ignore_patterns is None:
+        ignore_patterns = []
     
     if base_dir is None:
         base_dir = directory
@@ -338,7 +340,9 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
     try:
         items = sorted(os.listdir(directory))
         # Filter out ignored items
-        items = [item for item in items if not should_ignore(os.path.join(directory, item), item)]
+        items = [item for item in items if not should_ignore_pattern(
+            os.path.join(directory, item), item, ignore_patterns
+        )]
     except PermissionError:
         return output_lines
     
@@ -364,7 +368,7 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
             # Directory
             output_lines.append(f"{prefix}{connector} {item}/")
             generate_tree(item_path, new_prefix, output_lines, is_last_item, base_dir, 
-                         include_content, max_size_kb, progress_info)
+                         include_content, max_size_kb, progress_info, ignore_patterns)
         else:
             # File - update progress
             if progress_info:
@@ -401,7 +405,7 @@ def generate_tree(directory=".", prefix="", output_lines=None, is_last=True, bas
     return output_lines
 
 
-def give_structure(output_file="structure.txt", include_content=True, max_size_kb=10):
+def give_structure(output_file="structure.txt", include_content=True, max_size_kb=10, use_ignore=True):
     """
     Generate a structure file from the current directory.
     
@@ -409,23 +413,45 @@ def give_structure(output_file="structure.txt", include_content=True, max_size_k
         output_file: Output file name (default: structure.txt)
         include_content: Whether to include file contents
         max_size_kb: Maximum file size in KB to include content
+        use_ignore: Whether to use ignore patterns (default: True)
+        
+    Raises:
+        MkarchiPermissionError: If there's a permission issue
     """
     print(f"🔍 Scanning current directory...\n")
     
+    # Get ignore patterns based on use_ignore flag
+    if use_ignore:
+        ignore_patterns = get_ignore_patterns(use_defaults=True, use_mkarchiignore=True)
+        if ignore_patterns:
+            print(f"📋 Using {len(ignore_patterns)} ignore pattern(s)")
+    else:
+        ignore_patterns = []
+        print(f"⚠️  Ignoring nothing (--no-ignore enabled)")
+    
     # Count total files for progress bar
-    total_files = count_files(".")
+    total_files = count_files(".", ignore_patterns)
     print(f"📊 Found {total_files} files to process\n")
     
     # Progress tracking
     progress_info = {'current': 0, 'total': total_files}
     
-    output_lines = generate_tree(".", include_content=include_content, 
-                                 max_size_kb=max_size_kb, progress_info=progress_info)
+    try:
+        output_lines = generate_tree(".", include_content=include_content, 
+                                     max_size_kb=max_size_kb, progress_info=progress_info,
+                                     ignore_patterns=ignore_patterns)
+    except PermissionError as e:
+        raise MkarchiPermissionError(str(e))
     
     print()  # New line after progress bar
     
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(output_lines))
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(output_lines))
+    except PermissionError:
+        raise MkarchiPermissionError(output_file)
+    except Exception as e:
+        raise InvalidStructureError(f"Could not write to {output_file}: {str(e)}")
     
     print(f"\n✅ Structure file created: {output_file}")
     print(f"📊 Total items: {len(output_lines)} lines")
@@ -434,6 +460,8 @@ def give_structure(output_file="structure.txt", include_content=True, max_size_k
             print(f"📏 Max file size: No limit (all files included)")
         else:
             print(f"📏 Max file size included: {max_size_kb} KB")
+    if not use_ignore:
+        print(f"⚠️  No files were ignored (--no-ignore was used)")
     print(f"\n💡 You can now share this file or use 'mkarchi apply {output_file}' to recreate the structure.")
 
 
@@ -444,4 +472,5 @@ __all__ = [
     'give_structure',
     'is_empty_line',
     'clean_line',
+    'MkarchiError',
 ]

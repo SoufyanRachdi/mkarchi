@@ -9,9 +9,11 @@ if __name__ == "__main__" and __package__ is None:
     # Direct execution: add parent directory to path
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from mkarchi import __version__, HELP_TEXT, apply_structure, give_structure
+    from mkarchi.error import handle_cli_error, InvalidArgumentError
 else:
     # Package import
     from . import __version__, HELP_TEXT, apply_structure, give_structure
+    from .error import handle_cli_error, InvalidArgumentError
 
 
 def show_help():
@@ -22,6 +24,65 @@ def show_help():
 def show_version():
     """Display version number."""
     print(f"mkarchi version {__version__}")
+
+
+@handle_cli_error
+def cmd_apply(args):
+    """
+    Handle 'apply' command.
+    
+    Args:
+        args: Command arguments
+    """
+    if len(args) != 1:
+        raise InvalidArgumentError("Usage: mkarchi apply <structure_file>")
+    
+    structure_file = args[0]
+    apply_structure(structure_file)
+
+
+@handle_cli_error
+def cmd_give(args):
+    """
+    Handle 'give' command.
+    
+    Args:
+        args: Command arguments
+    """
+    # Parse options
+    include_content = True
+    output_file = "structure.txt"
+    max_size_kb = 10  # Default 10 KB
+    use_ignore = True  # Default: use ignore patterns
+    
+    # Parse arguments
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        
+        if arg == "-c" or arg == "--no-content":
+            include_content = False
+        elif arg == "--no-max":
+            max_size_kb = float('inf')  # No limit
+        elif arg == "--no-ignore":
+            use_ignore = False  # Disable all ignore patterns
+        elif arg.startswith("-max="):
+            try:
+                max_size_kb = int(arg.split("=")[1])
+                if max_size_kb < 0:
+                    raise ValueError("Size must be positive")
+            except (ValueError, IndexError):
+                raise InvalidArgumentError(
+                    f"Invalid max size: {arg}\n   Usage: -max=<size_in_kb> (e.g., -max=100)"
+                )
+        elif not arg.startswith("-"):
+            output_file = arg
+        else:
+            raise InvalidArgumentError(f"Unknown option: {arg}")
+        
+        i += 1
+    
+    give_structure(output_file, include_content, max_size_kb, use_ignore)
 
 
 def main():
@@ -42,52 +103,13 @@ def main():
         sys.exit(0)
     
     if command == "apply":
-        if len(sys.argv) != 3:
-            print("Usage: mkarchi apply <structure_file>")
-            sys.exit(1)
-        
-        structure_file = sys.argv[2]
-        
-        try:
-            apply_structure(structure_file)
-        except FileNotFoundError as e:
-            print(f"❌ {e}")
-            sys.exit(1)
-        except Exception as e:
-            print(f"❌ Error: {e}")
-            sys.exit(1)
+        cmd_apply(sys.argv[2:])
     
     elif command == "give":
-        # Parse options
-        include_content = True
-        output_file = "structure.txt"
-        max_size_kb = 10  # Default 10 KB
-        
-        # Check for flags
-        args = sys.argv[2:]
-        for i, arg in enumerate(args):
-            if arg == "-c" or arg == "--no-content":
-                include_content = False
-            elif arg == "--no-max":
-                max_size_kb = float('inf')  # No limit
-            elif arg.startswith("-max="):
-                try:
-                    max_size_kb = int(arg.split("=")[1])
-                except ValueError:
-                    print(f"❌ Invalid max size: {arg}")
-                    print("Usage: -max=<size_in_kb> (e.g., -max=100)")
-                    sys.exit(1)
-            elif not arg.startswith("-"):
-                output_file = arg
-        
-        try:
-            give_structure(output_file, include_content, max_size_kb)
-        except Exception as e:
-            print(f"❌ Error: {e}")
-            sys.exit(1)
+        cmd_give(sys.argv[2:])
     
     else:
-        print(f"Unknown command: {command}")
+        print(f"❌ Unknown command: {command}")
         print("Try 'mkarchi --help' for more information.")
         sys.exit(1)
 

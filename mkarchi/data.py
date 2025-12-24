@@ -2,7 +2,7 @@
 Data constants for mkarchi
 """
 
-__version__ = "0.2.0"
+__version__ = "0.1.7"
 
 HELP_TEXT = """
 mkarchi - Create project structure from tree files
