@@ -1,13 +1,17 @@
 # 🏗️ mkarchi
 
-mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.6, it can also generate mkarchi syntax from an existing project.
+mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.7, it can also generate mkarchi syntax from an existing project with enhanced features and better performance.
 
 Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
 
 ---
 ![mkarchi logo](assets/logo.png)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/mkarchi?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mkarchi)
+
+![mkarchi diagram](assets/diagram.png)
+
 ---
+
 # ✨ Features
 
 📁 Create directories from a tree structure
@@ -15,34 +19,43 @@ Design your architecture once, apply it anywhere, or reverse-engineer your folde
 ✍️ Create files with content using (begincontenu) / (endcontenu)
 🎯 Preserve indentation (perfect for Python, YAML, JSON…)
 💬 Support comments inside structure files
-🔄 Generate mkarchi structure from existing folders (NEW in v0.1.6)
+🔄 Generate mkarchi structure from existing folders
+🚫 Smart `.gitignore` support — skip ignored files automatically (NEW in v0.1.7)
+⚡ Improved performance and error handling (NEW in v0.1.7)
 🚀 Fast, simple, and AI-friendly
 
 ---
 
 # 📦 Installation
 
-#### ✅ Recommended (via pip)
+## ✅ Recommended (via pip)
 
 ```bash
 pip install mkarchi
 ```
-Option 2: Install from source
+
+## Option 2: Install from source
+
 ```bash
 git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 pip install -e .
 ```
-Option 3: Run as module (no installation)
+
+## Option 3: Run as module (no installation)
+
 ```bash
 git clone https://github.com/yourusername/mkarchi.git
 cd mkarchi
 python -m mkarchi apply structure.txt
 ```
+
 ---
 
 # 🚀 Quick Start
-#### 1️⃣ Create a structure file
+
+## 1️⃣ Create a structure file
+
 Create a file called structure.txt:
 
 ```text
@@ -71,11 +84,15 @@ my_project/
     requests>=2.28.0
 (endcontenu)
 ```
-### 2️⃣ Run mkarchi
-``` bash
+
+## 2️⃣ Run mkarchi
+
+```bash
 mkarchi apply structure.txt
 ```
-### 3️⃣ See the magic ✨
+
+## 3️⃣ See the magic ✨
+
 ```text
 🚀 Creating structure from structure.txt...
 
@@ -90,49 +107,85 @@ mkarchi apply structure.txt
 
 ✅ Architecture created successfully!
 ```
+
 ---
 
 # 📖 Usage
+
 ```bash
 mkarchi apply structure.txt
 mkarchi give [options] [output_file]
 mkarchi --help
 mkarchi --version
 mkarchi -v
-
 ```
+
 ---
-# 🔄 NEW: mkarchi give (v0.1.6)
+
+# 🔄 mkarchi give — Generate Structure Files
+
 Generate mkarchi syntax from your current directory.
-#### Default behavior
+
+## Default behavior
+
 ```bash
 mkarchi give
 ```
-➡️ Generates structure.txt
-➡️ Includes file contents
 
-#### Generate structure without file contents
+➡️ Generates `structure.txt`  
+➡️ Includes file contents  
+➡️ Respects `.gitignore` automatically (NEW in v0.1.7)
+
+## Generate structure without file contents
+
 ```bash
 mkarchi give -c
 ```
-or
+
+or specify a custom output file:
+
 ```bash
 mkarchi give -c myproject.txt
-
 ```
 
+## 🚫 Smart .gitignore Integration (v0.1.7)
+
+mkarchi now automatically reads your `.gitignore` file and excludes ignored files and directories when generating structure files. This means:
+
+- No more `node_modules/` or `venv/` clutter
+- `.git/` directories are skipped
+- Build artifacts and cache files are excluded
+- Binary files and dependencies stay out of your structure
+
+**Example:**
+
+If your `.gitignore` contains:
+
+```
+node_modules/
+*.pyc
+__pycache__/
+.env
+```
+
+Running `mkarchi give` will automatically skip all these files and folders!
+
+---
 
 # 📄 Structure File Format
 
-### 📁 Create Directories
-Directories must end with /:
+## 📁 Create Directories
+
+Directories must end with `/`:
 
 ```text
 my_folder/
 ├── subfolder/
 └── another_folder/
 ```
-### 📄 Create Empty Files
+
+## 📄 Create Empty Files
+
 Files without `(begincontenu)` / `(endcontenu)` are created empty:
 
 ```text
@@ -140,7 +193,9 @@ my_folder/
 ├── empty_file.txt
 └── config.json
 ```
-### ✍️ Create Files with Content
+
+## ✍️ Create Files with Content
+
 Use `(begincontenu)` and `(endcontenu)` to define file content:
 
 ```text
@@ -149,7 +204,9 @@ script.py(begincontenu)
     print("This is Python code")
 (endcontenu)
 ```
-### 🎯 Indentation Preservation
+
+## 🎯 Indentation Preservation
+
 mkarchi automatically preserves indentation:
 
 ```text
@@ -161,6 +218,7 @@ utils.py(begincontenu)
             print("Hello, World!")
 (endcontenu)
 ```
+
 Result (utils.py):
 
 ```python
@@ -170,8 +228,10 @@ def greet(name):
     else:
         print("Hello, World!")
 ```
-### 💬 Comments Support
-Use # for comments in your structure file:
+
+## 💬 Comments Support
+
+Use `#` for comments in your structure file:
 
 ```text
 project/
@@ -179,20 +239,34 @@ project/
 │   └── main.py   # Entry point
 └── tests/        # Tests
 ```
+
+---
+
 # 🎯 Use Cases
 
-#### ⚡ Rapid project scaffolding
-#### 📦 Reusable templates
-#### 🤖 AI-generated architectures
-#### 📘 Documentation & tutorials
+### ⚡ Rapid project scaffolding
+### 📦 Reusable templates
+### 🤖 AI-generated architectures
+### 📘 Documentation & tutorials
+### 🧩 Microservices setup
 
-🧩 Microservices setup
 ```bash
 mkarchi apply service1.txt
 mkarchi apply service2.txt
 ```
+
+### 🔄 Project documentation
+
+Generate clean structure documentation without sensitive files:
+
+```bash
+mkarchi give myproject-structure.txt
+```
+
 ---
+
 # 🔧 Advanced Example (Python Project)
+
 ```text
 python_project/
 ├── src/
@@ -223,8 +297,31 @@ python_project/
 │   (endcontenu)
 └── README.md
 ```
+
 ---
+
+# 🆕 What's New in v0.1.7?
+
+## 🚫 `.gitignore` Integration
+
+Automatically respects your `.gitignore` patterns when generating structure files with `mkarchi give`. No more manual filtering!
+
+## ⚡ Performance Improvements
+
+- Faster file processing
+- Optimized directory traversal
+- Better memory management for large projects
+
+## 🐛 Bug Fixes
+
+- Enhanced error handling for edge cases
+- Improved Unicode support for international characters
+- Better handling of symbolic links
+
+---
+
 # 🤝 Contributing
+
 Contributions are welcome! 🚀
 
 Fork the repository
@@ -234,28 +331,41 @@ Create a feature branch:
 ```bash
 git checkout -b feature/amazing-feature
 ```
+
 Commit your changes:
 
 ```bash
 git commit -m "Add amazing feature"
 ```
+
 Push to your branch:
 
 ```bash
 git push origin feature/amazing-feature
 ```
+
 Open a Pull Request
 
-#### 📝 License
-This project is licensed under the MIT License.
+---
+
+# 📝 License
+
+This project is licensed under the MIT License.  
 See the LICENSE file for details.
 
-#### 🐛 Issues & Feedback
-Found a bug or have a feature request?
-Please open an issue on GitHub Issues.
+---
 
-#### ⭐ Support the Project
+# 🐛 Issues & Feedback
+
+Found a bug or have a feature request?  
+Please open an issue on [GitHub Issues](https://github.com/yourusername/mkarchi/issues).
+
+---
+
+# ⭐ Support the Project
+
 If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
 
 ---
+
 ### ❤️ Made with passion by Soufyan Rachdi
