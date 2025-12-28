@@ -1,12 +1,26 @@
 # 🏗️ mkarchi
-
+![mkarchi logo](assets/logo.png)
+---
 mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.7, it can also generate mkarchi syntax from an existing project with enhanced features and better performance.
 
 Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
 
 ---
-![mkarchi logo](assets/logo.png)
+
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/mkarchi?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mkarchi)
+[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-Project-black?logo=github)](https://github.com/SoufyanRachdi/mkarchi)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](https://opensource.org/)
+[![AI Tools](https://img.shields.io/badge/AI-Developer%20Tool-purple)](https://github.com/SoufyanRachdi/mkarchi)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/Version-0.1.7-blue)](https://github.com/SoufyanRachdi/mkarchi/releases)
+![Stars](https://img.shields.io/github/stars/SoufyanRachdi/mkarchi)
+![Issues](https://img.shields.io/github/issues/SoufyanRachdi/mkarchi)
+[![PyPI version](https://img.shields.io/pypi/v/mkarchi)](https://pypi.org/project/mkarchi/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/mkarchi)](https://pypi.org/project/mkarchi/)
+![Repo Size](https://img.shields.io/github/repo-size/SoufyanRachdi/mkarchi)
+![CLI Tool](https://img.shields.io/badge/Type-CLI%20Tool-informational)
+
 
 ![mkarchi diagram](assets/diagram.png)
 
