@@ -1,76 +1,94 @@
+<div align="center">
+
 # 🏗️ mkarchi
+
 ![mkarchi logo](assets/logo.png)
----
-mkarchi (make architecture) is a command-line tool that generates complete project structures from simple tree-format text files — and now, with v0.1.7, it can also generate mkarchi syntax from an existing project with enhanced features and better performance.
 
-Design your architecture once, apply it anywhere, or reverse-engineer your folders back into mkarchi format.
+**Design your architecture once, apply it anywhere**
 
----
-
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/mkarchi?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mkarchi)
-[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![GitHub](https://img.shields.io/badge/GitHub-Project-black?logo=github)](https://github.com/SoufyanRachdi/mkarchi)
-[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](https://opensource.org/)
-[![AI Tools](https://img.shields.io/badge/AI-Developer%20Tool-purple)](https://github.com/SoufyanRachdi/mkarchi)
-[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-0.1.7-blue)](https://github.com/SoufyanRachdi/mkarchi/releases)
-![Stars](https://img.shields.io/github/stars/SoufyanRachdi/mkarchi)
-![Issues](https://img.shields.io/github/issues/SoufyanRachdi/mkarchi)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/mkarchi?period=total&units=international_system&left_color=black&right_color=green&left_text=downloads)](https://pepy.tech/projects/mkarchi)
 [![PyPI version](https://img.shields.io/pypi/v/mkarchi)](https://pypi.org/project/mkarchi/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/mkarchi)](https://pypi.org/project/mkarchi/)
-![Repo Size](https://img.shields.io/github/repo-size/SoufyanRachdi/mkarchi)
-![CLI Tool](https://img.shields.io/badge/Type-CLI%20Tool-informational)
+[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/SoufyanRachdi/mkarchi?style=social)](https://github.com/SoufyanRachdi/mkarchi)
 
+[Documentation](https://mkarchi.vercel.app/) • [Latest Version](https://mkarchi.vercel.app/version) • [FAQ](https://mkarchi.vercel.app/faq) • [Community](https://mkarchi.vercel.app/community)
+
+</div>
+
+---
+
+## 🌟 What is mkarchi?
+
+**mkarchi** (make architecture) is a powerful command-line tool that generates complete project structures from simple tree-format text files. With v0.1.7, you can also reverse-engineer your existing projects back into mkarchi format — making project scaffolding and documentation effortless.
+
+<div align="center">
 
 ![mkarchi diagram](assets/diagram.png)
 
----
-
-# ✨ Features
-
-📁 Create directories from a tree structure
-📄 Create empty files automatically
-✍️ Create files with content using (begincontenu) / (endcontenu)
-🎯 Preserve indentation (perfect for Python, YAML, JSON…)
-💬 Support comments inside structure files
-🔄 Generate mkarchi structure from existing folders
-🚫 Smart `.gitignore` support — skip ignored files automatically (NEW in v0.1.7)
-⚡ Improved performance and error handling (NEW in v0.1.7)
-🚀 Fast, simple, and AI-friendly
+</div>
 
 ---
 
-# 📦 Installation
+## ✨ Key Features
 
-## ✅ Recommended (via pip)
+<table>
+<tr>
+<td width="50%">
+
+### 📋 Generation
+- 📁 **Create directories** from tree structures
+- 📄 **Generate files** with or without content
+- ✍️ **Content embedding** using `(begincontenu)` tags
+- 🎯 **Indentation preservation** for Python, YAML, JSON
+- 💬 **Comments support** in structure files
+
+</td>
+<td width="50%">
+
+### 🔄 Reverse Engineering
+- 🔄 **Generate mkarchi files** from existing projects
+- 🚫 **Smart `.gitignore`** integration (NEW v0.1.7)
+- ⚡ **Improved performance** and error handling
+- 🚀 **Fast, simple**, and AI-friendly
+- 📦 **Reusable templates** for any project
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
 pip install mkarchi
 ```
 
-## Option 2: Install from source
+<details>
+<summary>📦 Alternative Installation Methods</summary>
 
+**Install from source:**
 ```bash
-git clone https://github.com/yourusername/mkarchi.git
+git clone https://github.com/SoufyanRachdi/mkarchi.git
 cd mkarchi
 pip install -e .
 ```
 
-## Option 3: Run as module (no installation)
-
+**Run as module (no installation):**
 ```bash
-git clone https://github.com/yourusername/mkarchi.git
+git clone https://github.com/SoufyanRachdi/mkarchi.git
 cd mkarchi
 python -m mkarchi apply structure.txt
 ```
 
----
+</details>
 
-# 🚀 Quick Start
+### Create Your First Project
 
-## 1️⃣ Create a structure file
-
-Create a file called structure.txt:
+**1. Create a structure file** (`structure.txt`):
 
 ```text
 my_project/
@@ -82,10 +100,7 @@ my_project/
 │   │   if __name__ == "__main__":
 │   │       main()
 │   (endcontenu)
-│   └── utils.py(begincontenu)
-│       def helper():
-│           return "Helper function"
-│   (endcontenu)
+│   └── utils.py
 ├── tests/
 │   └── test_main.py
 ├── README.md(begincontenu)
@@ -99,21 +114,21 @@ my_project/
 (endcontenu)
 ```
 
-## 2️⃣ Run mkarchi
+**2. Apply the structure:**
 
 ```bash
 mkarchi apply structure.txt
 ```
 
-## 3️⃣ See the magic ✨
+**3. See the magic ✨**
 
-```text
+```
 🚀 Creating structure from structure.txt...
 
 📁 Created directory: my_project
 📁 Created directory: my_project/src
 📄 Created file with content: my_project/src/main.py
-📄 Created file with content: my_project/src/utils.py
+📄 Created file: my_project/src/utils.py
 📁 Created directory: my_project/tests
 📄 Created file: my_project/tests/test_main.py
 📄 Created file with content: my_project/README.md
@@ -124,57 +139,65 @@ mkarchi apply structure.txt
 
 ---
 
-# 📖 Usage
+## 📖 Commands
 
 ```bash
+# Apply a structure file to create project
 mkarchi apply structure.txt
-mkarchi give [options] [output_file]
+
+# Generate structure file from current directory
+mkarchi give
+
+# Generate without file contents
+mkarchi give -c
+
+# Save to custom file
+mkarchi give myproject.txt
+
+# Get help
 mkarchi --help
+
+# Check version
 mkarchi --version
-mkarchi -v
 ```
 
 ---
 
-# 🔄 mkarchi give — Generate Structure Files
+## 🔄 Reverse Engineering with `mkarchi give`
 
-Generate mkarchi syntax from your current directory.
+Generate mkarchi syntax from your existing project structure.
 
-## Default behavior
+### Default Behavior
 
 ```bash
 mkarchi give
 ```
 
-➡️ Generates `structure.txt`  
-➡️ Includes file contents  
-➡️ Respects `.gitignore` automatically (NEW in v0.1.7)
+✅ Generates `structure.txt`  
+✅ Includes file contents  
+✅ Respects `.gitignore` automatically  
 
-## Generate structure without file contents
+### Without File Contents
 
 ```bash
 mkarchi give -c
 ```
 
-or specify a custom output file:
+### Custom Output File
 
 ```bash
 mkarchi give -c myproject.txt
 ```
 
-## 🚫 Smart .gitignore Integration (v0.1.7)
+### 🚫 Smart `.gitignore` Integration (v0.1.7)
 
-mkarchi now automatically reads your `.gitignore` file and excludes ignored files and directories when generating structure files. This means:
+mkarchi automatically reads your `.gitignore` and excludes:
+- `node_modules/`, `venv/`, `__pycache__/`
+- `.git/` directories
+- Build artifacts and cache files
+- Binary files and dependencies
 
-- No more `node_modules/` or `venv/` clutter
-- `.git/` directories are skipped
-- Build artifacts and cache files are excluded
-- Binary files and dependencies stay out of your structure
-
-**Example:**
-
-If your `.gitignore` contains:
-
+**Example `.gitignore`:**
 ```
 node_modules/
 *.pyc
@@ -182,14 +205,13 @@ __pycache__/
 .env
 ```
 
-Running `mkarchi give` will automatically skip all these files and folders!
+Running `mkarchi give` automatically skips all these files! 🎉
 
 ---
 
-# 📄 Structure File Format
+## 📝 Structure File Syntax
 
-## 📁 Create Directories
-
+### Directories
 Directories must end with `/`:
 
 ```text
@@ -198,9 +220,8 @@ my_folder/
 └── another_folder/
 ```
 
-## 📄 Create Empty Files
-
-Files without `(begincontenu)` / `(endcontenu)` are created empty:
+### Empty Files
+Files without content tags are created empty:
 
 ```text
 my_folder/
@@ -208,20 +229,18 @@ my_folder/
 └── config.json
 ```
 
-## ✍️ Create Files with Content
-
-Use `(begincontenu)` and `(endcontenu)` to define file content:
+### Files with Content
+Use `(begincontenu)` and `(endcontenu)`:
 
 ```text
 script.py(begincontenu)
-    print("Hello!")
-    print("This is Python code")
+    def hello():
+        print("Hello, World!")
 (endcontenu)
 ```
 
-## 🎯 Indentation Preservation
-
-mkarchi automatically preserves indentation:
+### Indentation Preservation
+Indentation is automatically preserved:
 
 ```text
 utils.py(begincontenu)
@@ -233,8 +252,7 @@ utils.py(begincontenu)
 (endcontenu)
 ```
 
-Result (utils.py):
-
+**Result (`utils.py`):**
 ```python
 def greet(name):
     if name:
@@ -243,9 +261,8 @@ def greet(name):
         print("Hello, World!")
 ```
 
-## 💬 Comments Support
-
-Use `#` for comments in your structure file:
+### Comments
+Use `#` for comments:
 
 ```text
 project/
@@ -256,40 +273,81 @@ project/
 
 ---
 
-# 🎯 Use Cases
+## 🎯 Use Cases
 
-### ⚡ Rapid project scaffolding
-### 📦 Reusable templates
-### 🤖 AI-generated architectures
-### 📘 Documentation & tutorials
-### 🧩 Microservices setup
+<table>
+<tr>
+<td width="33%">
 
+### ⚡ Rapid Scaffolding
+Spin up new projects in seconds with predefined templates.
+
+</td>
+<td width="33%">
+
+### 🤖 AI Integration
+Perfect for AI-generated project structures and code scaffolding.
+
+</td>
+<td width="33%">
+
+### 📦 Reusable Templates
+Create once, reuse everywhere. Share templates with your team.
+
+</td>
+</tr>
+<tr>
+<td width="33%">
+
+### 🧩 Microservices
+Set up multiple services with consistent structure:
 ```bash
 mkarchi apply service1.txt
 mkarchi apply service2.txt
 ```
 
-### 🔄 Project documentation
+</td>
+<td width="33%">
 
-Generate clean structure documentation without sensitive files:
-
+### 📘 Documentation
+Generate clean project documentation:
 ```bash
-mkarchi give myproject-structure.txt
+mkarchi give docs.txt
 ```
+
+</td>
+<td width="33%">
+
+### 🎓 Tutorials
+Create step-by-step project structures for teaching and learning.
+
+</td>
+</tr>
+</table>
 
 ---
 
-# 🔧 Advanced Example (Python Project)
+## 🔧 Advanced Example: Python Project
 
 ```text
 python_project/
 ├── src/
 │   ├── __init__.py
-│   └── main.py(begincontenu)
-│       """Main module."""
-│
-│       def main():
-│           print("Starting application...")
+│   ├── main.py(begincontenu)
+│   │   """Main application module."""
+│   │
+│   │   def main():
+│   │       print("Starting application...")
+│   │       return 0
+│   │
+│   │   if __name__ == "__main__":
+│   │       main()
+│   (endcontenu)
+│   └── config.py(begincontenu)
+│       """Configuration module."""
+│   
+│       DEBUG = True
+│       VERSION = "0.1.0"
 │   (endcontenu)
 ├── tests/
 │   ├── __init__.py
@@ -298,7 +356,14 @@ python_project/
 │       from src.main import main
 │
 │       def test_main():
-│           assert main() is None
+│           """Test main function."""
+│           assert main() == 0
+│   (endcontenu)
+├── .gitignore(begincontenu)
+│   __pycache__/
+│   *.pyc
+│   .pytest_cache/
+│   venv/
 │   (endcontenu)
 ├── setup.py(begincontenu)
 │   from setuptools import setup, find_packages
@@ -307,79 +372,119 @@ python_project/
 │       name="my-project",
 │       version="0.1.0",
 │       packages=find_packages(),
+│       install_requires=[
+│           "pytest>=7.0.0",
+│       ],
 │   )
 │   (endcontenu)
-└── README.md
+└── README.md(begincontenu)
+    # Python Project
+    
+    A well-structured Python project template.
+(endcontenu)
 ```
 
 ---
 
-# 🆕 What's New in v0.1.7?
+## 🆕 What's New in v0.1.7?
 
-## 🚫 `.gitignore` Integration
+<table>
+<tr>
+<td width="33%" align="center">
 
-Automatically respects your `.gitignore` patterns when generating structure files with `mkarchi give`. No more manual filtering!
+### 🚫 `.gitignore` Support
+Automatically respects `.gitignore` patterns
 
-## ⚡ Performance Improvements
+</td>
+<td width="33%" align="center">
 
-- Faster file processing
-- Optimized directory traversal
-- Better memory management for large projects
+### ⚡ Performance Boost
+Faster processing and optimized traversal
 
-## 🐛 Bug Fixes
+</td>
+<td width="33%" align="center">
 
-- Enhanced error handling for edge cases
-- Improved Unicode support for international characters
-- Better handling of symbolic links
+### 🐛 Bug Fixes
+Enhanced error handling and Unicode support
 
----
+</td>
+</tr>
+</table>
 
-# 🤝 Contributing
+**[View full changelog →](https://mkarchi.vercel.app/version)**
 
-Contributions are welcome! 🚀
-
-Fork the repository
-
-Create a feature branch:
-
-```bash
-git checkout -b feature/amazing-feature
-```
-
-Commit your changes:
-
-```bash
-git commit -m "Add amazing feature"
-```
-
-Push to your branch:
-
-```bash
-git push origin feature/amazing-feature
-```
-
-Open a Pull Request
+**[Learn more about v0.1.7 →](https://mkarchi.vercel.app/learn/0.1.7)**
 
 ---
 
-# 📝 License
+## 📚 Documentation & Resources
 
-This project is licensed under the MIT License.  
-See the LICENSE file for details.
+<div align="center">
 
----
+| Resource | Description |
+|----------|-------------|
+| [📖 Documentation](https://mkarchi.vercel.app/) | Complete guide and tutorials |
+| [🔄 Version History](https://mkarchi.vercel.app/version) | All releases and updates |
+| [📘 v0.1.7 Guide](https://mkarchi.vercel.app/learn/0.1.7) | Latest version features |
+| [📗 v0.1.6 Guide](https://mkarchi.vercel.app/learn/0.1.6) | Previous version features |
+| [❓ FAQ](https://mkarchi.vercel.app/faq) | Frequently asked questions |
+| [👥 Community](https://mkarchi.vercel.app/community) | Join the community |
+| [📧 Contact](https://mkarchi.vercel.app/contact) | Get in touch |
 
-# 🐛 Issues & Feedback
-
-Found a bug or have a feature request?  
-Please open an issue on [GitHub Issues](https://github.com/yourusername/mkarchi/issues).
-
----
-
-# ⭐ Support the Project
-
-If you find mkarchi useful, please consider giving it a ⭐ on GitHub!
+</div>
 
 ---
 
-### ❤️ Made with passion by Soufyan Rachdi
+## 🤝 Contributing
+
+Contributions are welcome! We appreciate your help in making mkarchi better.
+
+1. **Fork** the repository
+2. **Create** a feature branch
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit** your changes
+   ```bash
+   git commit -m "Add amazing feature"
+   ```
+4. **Push** to your branch
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open** a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🐛 Issues & Support
+
+Found a bug or have a feature request?
+
+- 🐛 [Report an issue](https://github.com/SoufyanRachdi/mkarchi/issues)
+- 💬 [Join our community](https://mkarchi.vercel.app/community)
+- 📧 [Contact us](https://mkarchi.vercel.app/contact)
+
+---
+
+## ⭐ Star Us!
+
+If you find **mkarchi** useful, please consider giving it a ⭐ on [GitHub](https://github.com/SoufyanRachdi/mkarchi)!
+
+---
+
+<div align="center">
+
+### Made with ❤️ by [Soufyan Rachdi](https://github.com/SoufyanRachdi)
+
+[![GitHub](https://img.shields.io/badge/GitHub-SoufyanRachdi-black?logo=github)](https://github.com/SoufyanRachdi)
+[![Website](https://img.shields.io/badge/Website-mkarchi-blue)](https://mkarchi.vercel.app/)
+
+**[Documentation](https://mkarchi.vercel.app/)** • **[Community](https://mkarchi.vercel.app/community)** • **[Contact](https://mkarchi.vercel.app/contact)**
+
+</div>
